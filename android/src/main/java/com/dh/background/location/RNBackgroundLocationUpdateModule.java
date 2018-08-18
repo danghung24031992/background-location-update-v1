@@ -46,7 +46,7 @@ public class RNBackgroundLocationUpdateModule extends ReactContextBaseJavaModule
 
 
   @ReactMethod
-  public void locationDidUpdate(Promise promise) {
+  public void startLocationTracking(Promise promise) {
     String result = "Success";
       Log.d("startService","startService============");
     try {
@@ -61,7 +61,7 @@ public class RNBackgroundLocationUpdateModule extends ReactContextBaseJavaModule
   }
 
   @ReactMethod
-  public void stopService(Promise promise) {
+  public void stopLocationTracking(Promise promise) {
     String result = "Success";
     try {
       Intent intent = new Intent(GeoLocationService.FOREGROUND);

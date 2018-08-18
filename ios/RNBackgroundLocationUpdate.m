@@ -14,10 +14,10 @@
 }
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(locationDidUpdate)
+RCT_EXPORT_METHOD(startLocationTracking)
 {
-    NSLog(@"locationDidUpdate");
-    UIAlertView * alert;
+    NSLog(@"startLocationTracking");
+    // UIAlertView * alert;
     
     //We have to make sure that the Background App Refresh is enable for the Location updates to work in the background.
     if([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusDenied){
@@ -52,6 +52,11 @@ RCT_EXPORT_METHOD(locationDidUpdate)
                                                                   userInfo:nil
                                                                    repeats:YES];
     }
+}
+
+RCT_EXPORT_METHOD(stopLocationTracking)
+{
+    [self.locationTracker stopLocationTracking];
 }
 
 -(void)updateLocation {
