@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
@@ -28,6 +31,7 @@ public class RNBackgroundLocationUpdateModule extends ReactContextBaseJavaModule
     BroadcastReceiver geoLocationReceiver = new BroadcastReceiver() {
       @Override
       public void onReceive(Context context, Intent intent) {
+          Log.d("startService","BroadcastReceiver============");
         Location message = intent.getParcelableExtra("message");
         RNBackgroundLocationUpdateModule.this.sendEvent(message);
       }
@@ -40,10 +44,11 @@ public class RNBackgroundLocationUpdateModule extends ReactContextBaseJavaModule
     return "RNBackgroundLocationUpdate";
   }
 
+
   @ReactMethod
-  public void startService(Promise promise) {
+  public void locationDidUpdate(Promise promise) {
     String result = "Success";
-    System.out.print("startService");
+      Log.d("startService","startService============");
     try {
       Intent intent = new Intent(GeoLocationService.FOREGROUND);
       intent.setClass(this.getReactApplicationContext(), GeoLocationService.class);
@@ -70,6 +75,7 @@ public class RNBackgroundLocationUpdateModule extends ReactContextBaseJavaModule
   }
 
   private void sendEvent(Location message) {
+      Log.d("startService","sendEvent============");
     WritableMap map = Arguments.createMap();
     WritableMap coordMap = Arguments.createMap();
     coordMap.putDouble("latitude", message.getLatitude());
@@ -82,6 +88,7 @@ public class RNBackgroundLocationUpdateModule extends ReactContextBaseJavaModule
     map.putMap("coords", coordMap);
     map.putDouble("timestamp", message.getTime());
 
-    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("updateLocation", map);
+    this.getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("didUpdateLocation", map);
+    Log.d("startService",message.getLatitude()+"");
   }
 }

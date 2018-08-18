@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 
 public class GeoLocationService extends Service {
     public static final String FOREGROUND = "com.dh.location.FOREGROUND";
@@ -42,12 +44,12 @@ public class GeoLocationService extends Service {
     @Override
     @TargetApi(Build.VERSION_CODES.M)
     public void onCreate() {
-        locationManager = getSystemService(LocationManager.class);
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         int permissionCheck = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 100, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 200, locationListener);
         }
     }
 
@@ -81,19 +83,16 @@ public class GeoLocationService extends Service {
 
     private Notification getCompatNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        String str = "Is using your location in the background";
+        String str = "Đang sử dụng vị trí của bạn trong nền";
         builder
-                .setSmallIcon(R.drawable.ic_app)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                .setContentTitle("App Name")
+                .setContentTitle("Ví Bảo Kim")
                 .setContentText(str)
                 .setTicker(str)
                 .setWhen(System.currentTimeMillis());
-
-//        Intent startIntent = new Intent(getApplicationContext(), vn.baokim.mobilepayment.MainActivity.class);
         final Intent emptyIntent = new Intent();
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 100, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        PendingIntent contentIntent = PendingIntent.getActivity(this, 1000, startIntent, 0);
         builder.setContentIntent(pendingIntent);
         return builder.build();
     }
