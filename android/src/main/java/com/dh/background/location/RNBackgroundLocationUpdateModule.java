@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -48,11 +49,19 @@ public class RNBackgroundLocationUpdateModule extends ReactContextBaseJavaModule
   @ReactMethod
   public void startLocationTracking(Promise promise) {
     String result = "Success";
-      Log.d("startService","startService============");
+      Log.d("GeoLocationService","startService============");
     try {
       Intent intent = new Intent(GeoLocationService.FOREGROUND);
       intent.setClass(this.getReactApplicationContext(), GeoLocationService.class);
-      getReactApplicationContext().startService(intent);
+
+      // >= android O
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          Log.d("GeoLocationService","getCompatNotification.O");
+        getReactApplicationContext().startForegroundService(intent);
+      } else {
+        getReactApplicationContext().startService(intent);
+          Log.d("GeoLocationService","getCompatNotification.M");
+      }
     } catch (Exception e) {
       promise.reject(e);
       return;
@@ -76,7 +85,7 @@ public class RNBackgroundLocationUpdateModule extends ReactContextBaseJavaModule
 
   private void sendEvent(Location message) {
       Log.d("startService","sendEvent============");
-    WritableMap map = Arguments.createMap();
+//    WritableMap map = Arguments.createMap();
     WritableMap coordMap = Arguments.createMap();
     coordMap.putDouble("latitude", message.getLatitude());
     coordMap.putDouble("longitude", message.getLongitude());
@@ -85,10 +94,10 @@ public class RNBackgroundLocationUpdateModule extends ReactContextBaseJavaModule
     coordMap.putDouble("heading", message.getBearing());
     coordMap.putDouble("speed", message.getSpeed());
 
-    map.putMap("coords", coordMap);
-    map.putDouble("timestamp", message.getTime());
+//    map.putMap("coords", coordMap);
+//    map.putDouble("timestamp", message.getTime());
 
-    this.getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("didUpdateLocation", map);
+    this.getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("didUpdateLocation", coordMap);
     Log.d("startService",message.getLatitude()+"");
   }
 }
