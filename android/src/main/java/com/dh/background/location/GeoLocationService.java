@@ -90,7 +90,6 @@ public class GeoLocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("GeoLocationService","onStartCommand");
         startForeground(GEOLOCATION_NOTIFICATION_ID, getCompatNotification());
         return START_STICKY;
     }
@@ -104,7 +103,6 @@ public class GeoLocationService extends Service {
     private Notification getCompatNotification() {
         String str = "Đang sử dụng vị trí của bạn trong nền";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.d("GeoLocationService", "getCompatNotification.O");
             final Intent emptyIntent = new Intent();
             PendingIntent pendingIntent = PendingIntent.getActivity(this,
                     0, emptyIntent, 0);
@@ -120,7 +118,6 @@ public class GeoLocationService extends Service {
 
             return  notification;
         }
-            Log.d("GeoLocationService", "getCompatNotification.M");
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
             builder
                     .setSmallIcon(R.drawable.ic_notification)

@@ -32,7 +32,6 @@ public class RNBackgroundLocationUpdateModule extends ReactContextBaseJavaModule
     BroadcastReceiver geoLocationReceiver = new BroadcastReceiver() {
       @Override
       public void onReceive(Context context, Intent intent) {
-          Log.d("startService","BroadcastReceiver============");
         Location message = intent.getParcelableExtra("message");
         RNBackgroundLocationUpdateModule.this.sendEvent(message);
       }
@@ -49,18 +48,15 @@ public class RNBackgroundLocationUpdateModule extends ReactContextBaseJavaModule
   @ReactMethod
   public void startLocationTracking(Promise promise) {
     String result = "Success";
-      Log.d("GeoLocationService","startService============");
     try {
       Intent intent = new Intent(GeoLocationService.FOREGROUND);
       intent.setClass(this.getReactApplicationContext(), GeoLocationService.class);
 
       // >= android O
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-          Log.d("GeoLocationService","getCompatNotification.O");
         getReactApplicationContext().startForegroundService(intent);
       } else {
         getReactApplicationContext().startService(intent);
-          Log.d("GeoLocationService","getCompatNotification.M");
       }
     } catch (Exception e) {
       promise.reject(e);
@@ -84,8 +80,6 @@ public class RNBackgroundLocationUpdateModule extends ReactContextBaseJavaModule
   }
 
   private void sendEvent(Location message) {
-      Log.d("startService","sendEvent============");
-//    WritableMap map = Arguments.createMap();
     WritableMap coordMap = Arguments.createMap();
     coordMap.putDouble("latitude", message.getLatitude());
     coordMap.putDouble("longitude", message.getLongitude());
@@ -94,10 +88,6 @@ public class RNBackgroundLocationUpdateModule extends ReactContextBaseJavaModule
     coordMap.putDouble("heading", message.getBearing());
     coordMap.putDouble("speed", message.getSpeed());
 
-//    map.putMap("coords", coordMap);
-//    map.putDouble("timestamp", message.getTime());
-
     this.getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("didUpdateLocation", coordMap);
-    Log.d("startService",message.getLatitude()+"");
   }
 }
