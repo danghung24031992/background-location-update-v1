@@ -39,7 +39,19 @@
 ```javascript
 import RNBackgroundLocationUpdate from 'react-native-background-location-update';
 
-// TODO: What to do with the module?
-RNBackgroundLocationUpdate;
+const BackgroundLocationEvent = new NativeEventEmitter(NativeModules.RNBackgroundLocationUpdate)
+
+//listen update location
+BackgroundLocationEvent.addListener("didUpdateLocation", (location) => {
+		console.log("===========================")
+		console.log(location)
+		console.log("===========================")
+	  });
+
+//Turn on location update
+RNBackgroundLocationUpdate.startLocationTracking()
+	
+//Turn on location update
+RNBackgroundLocationUpdate.stopLocationTracking()
 ```
   # background-location-update-v1
